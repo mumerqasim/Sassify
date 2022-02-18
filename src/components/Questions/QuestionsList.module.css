@@ -1,0 +1,25 @@
+.QuestionsListSection {
+    padding: 2rem 1.75rem;
+    max-height: 30vh;
+    overflow-y: scroll;
+    background-color: #f7f7f7;
+    margin: 2rem 0rem;
+    box-shadow: inset 1px 1px 2rem 0.1px #0000001e;
+    border-radius: 0.5rem;
+    border: 1px solid grey;
+}
+
+.QuestionsListSection::-webkit-scrollbar {
+    width: 12px;               /* width of the entire scrollbar */
+}
+  
+.QuestionsListSection::-webkit-scrollbar-track {
+    background-image: linear-gradient(180deg, #fdfbfb 0%, #fcfcfc 100%);
+    border-radius: 20px; 
+}
+  
+.QuestionsListSection::-webkit-scrollbar-thumb {
+    background-color: #bdbdbd;    /* color of the scroll thumb */
+    border-radius: 20px;       /* roundness of the scroll thumb */
+    border: 3px solid #fdfbfb;  /* creates padding around scroll thumb */
+}

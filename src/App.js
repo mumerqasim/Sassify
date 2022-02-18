@@ -1,23 +1,32 @@
-import logo from './logo.svg';
 import './App.css';
+import NewQuestion from './components/New Question/NewQuestion';
+import Output from './components/Output/Output';
+import QuestionsList from './components/Questions/QuestionsList';
+import { useState } from 'react';
 
 function App() {
+  const [questionsList, updateQuestionsList] = useState([]);
+
+  const addQuestionHandler = (question) => {
+      updateQuestionsList((state => {
+        state.push(question);
+        const arr = [...state];
+        return arr;
+      }));
+  } 
+
+  const crossClickedHandler = (e,key) => {
+      const copylist = [...questionsList];
+      const qIndex= copylist.findIndex((obj)=>obj.id===key);
+      copylist.splice(qIndex,1);
+      updateQuestionsList(copylist);
+  }
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <NewQuestion addQuestion={addQuestionHandler}/>
+      <QuestionsList questionsList={[...questionsList]} crossClicked={crossClickedHandler}/>
+      <Output questionsList={questionsList}/>
     </div>
   );
 }

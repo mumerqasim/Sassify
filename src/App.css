@@ -1,5 +1,8 @@
 .App {
   text-align: center;
+  width: 90%;
+  max-width: 770px;
+  margin: auto;
 }
 
 .App-logo {
@@ -7,10 +10,21 @@
   pointer-events: none;
 }
 
+label[for='custom']{
+  position: absolute;
+  left: 1.5rem;
+  top: auto;
+  transform: translate(0,2rem);
+}
+
 @media (prefers-reduced-motion: no-preference) {
   .App-logo {
     animation: App-logo-spin infinite 20s linear;
   }
+}
+
+.required{
+  color: red;
 }
 
 .App-header {

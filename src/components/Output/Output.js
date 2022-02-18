@@ -1,4 +1,4 @@
-import { useState,useRef } from 'react/cjs/react.development';
+import { useState,useRef } from 'react';
 import Styles from './Output.module.css';
 
 

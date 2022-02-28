@@ -1,7 +1,6 @@
 import React from "react";
 import Styles from './Radio.module.css';
 
-
 const Radio = (props) => {
     const clicked = (e) => {
        if(e.target.childElementCount!=0){

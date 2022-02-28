@@ -1,15 +1,6 @@
 import { useState,useRef } from 'react';
 import Styles from './Output.module.css';
 
-
-// questionType,
-// questionCode,
-// answerOptions,
-// skipLogic,
-// otherCode,
-// exclusiveOption,
-// subQuestions
-
 const codeTemplate = {
     true: 'T    ',
     false: 'WRONG',
@@ -26,28 +17,52 @@ const Output = (props) => {
     codeTemplate.midProcs2=`select distinct `;
 
     for(let key in Object.keys(props.questionsList)){
-        let {questionType, questionCode,answerOptions,skipLogic,otherCode,exclusiveOption,subQuestions,customCode} = props.questionsList[key];
+        let {questionType,
+             questionCode,
+             answerOptions,
+             skipLogic,
+             otherCode,
+             exclusiveOption,
+             subQuestions,
+             customCode,
+             minMax,
+             oldLogic,
+             newLogic,
+             changeDate
+            } = props.questionsList[key];
         questionCode = questionCode.trim();
         answerOptions = answerOptions.trim();
         skipLogic = skipLogic.trim();
         otherCode = Number(otherCode.trim());
         exclusiveOption = exclusiveOption.trim();
         subQuestions = subQuestions.trim();
+        oldLogic=oldLogic.trim();
+        changeDate=changeDate.trim();
+        newLogic=newLogic.trim();
         let modeOptions = answerOptions.split('|');
         let modeSwitch = modeOptions.length > 1;
+        let minMaxarr= minMax.trim().split(',');
         switch(questionType){
             case('radio/equation'):
                 if(!skipLogic){
                     if(otherCode){
                         if(modeSwitch){
-                            code=code+`if (pMode=1 & ((${questionCode}_other~="" & ${questionCode}=${otherCode}) OR (${questionCode} in (${modeOptions[0]}) & ${questionCode}_other=""))) then ${questionCode}_final="${codeTemplate.true}";\nelse if (pMode~=1 & ((${questionCode}_other~="" & ${questionCode}=${otherCode}) OR (${questionCode} in (${modeOptions[1]}) & ${questionCode}_other=""))) then ${questionCode}_final="${codeTemplate.true}";\nelse ${questionCode}_final="${codeTemplate.false}";\n\n`;
+                            if(modeOptions.length===2){
+                                code=code+`if (pMode=1 & ((${questionCode}_other~="" & ${questionCode}=${otherCode}) OR (${questionCode} in (${modeOptions[0]}) & ${questionCode}_other=""))) then ${questionCode}_final="${codeTemplate.true}";\nelse if (pMode>1 & ((${questionCode}_other~="" & ${questionCode}=${otherCode}) OR (${questionCode} in (${modeOptions[1]}) & ${questionCode}_other=""))) then ${questionCode}_final="${codeTemplate.true}";\nelse ${questionCode}_final="${codeTemplate.false}";\n\n`;
+                            }else{
+                                code=code+`if (pMode=1 & ((${questionCode}_other~="" & ${questionCode}=${otherCode}) OR (${questionCode} in (${modeOptions[0]}) & ${questionCode}_other=""))) then ${questionCode}_final="${codeTemplate.true}";\nelse if (pMode=2 & ((${questionCode}_other~="" & ${questionCode}=${otherCode}) OR (${questionCode} in (${modeOptions[1]}) & ${questionCode}_other=""))) then ${questionCode}_final="${codeTemplate.true}";\nelse if (pMode=3 & ((${questionCode}_other~="" & ${questionCode}=${otherCode}) OR (${questionCode} in (${modeOptions[2]}) & ${questionCode}_other=""))) then ${questionCode}_final="${codeTemplate.true}";\nelse ${questionCode}_final="${codeTemplate.false}";\n\n`;
+                            }
                         }else{
                             code=code+`if (${questionCode}_other~="" & ${questionCode}=${otherCode}) OR (${questionCode} in (${answerOptions}) & ${questionCode}_other="") then ${questionCode}_final="${codeTemplate.true}"; \nelse ${questionCode}_final="${codeTemplate.false}";\n\n`;
                         }
                         codeTemplate.midProcs2+=`, ${questionCode}_final`;
                     }else{
                         if(modeSwitch){
-                            code=code+`if ((pMode=1 & ${questionCode} in (${modeOptions[0]})) OR (pMode~=1 & ${questionCode} in (${modeOptions[1]}))) then ${questionCode}_final="${codeTemplate.true}"; \nelse ${questionCode}_final="${codeTemplate.false}";\n\n`;
+                            if(modeOptions.length===2){
+                                code=code+`if ((pMode=1 & ${questionCode} in (${modeOptions[0]})) OR (pMode>1 & ${questionCode} in (${modeOptions[1]}))) then ${questionCode}_final="${codeTemplate.true}"; \nelse ${questionCode}_final="${codeTemplate.false}";\n\n`;
+                            }else{
+                                code=code+`if ((pMode=1 & ${questionCode} in (${modeOptions[0]})) OR (pMode=2 & ${questionCode} in (${modeOptions[1]})) OR (pMode=3 & ${questionCode} in (${modeOptions[2]}))) then ${questionCode}_final="${codeTemplate.true}"; \nelse ${questionCode}_final="${codeTemplate.false}";\n\n`;
+                            }
                         }else{
                             code=code+`if ${questionCode} in (${answerOptions}) then ${questionCode}_final="${codeTemplate.true}"; \nelse ${questionCode}_final="${codeTemplate.false}";\n\n`;
                         }
@@ -56,14 +71,22 @@ const Output = (props) => {
                 }else{
                     if(otherCode){
                         if(modeSwitch){
-                            code=code+`if (${skipLogic}) & ((pMode=1 & ((${questionCode}_other~="" & ${questionCode}=${otherCode}) OR (${questionCode} in (${modeOptions[0]}) & ${questionCode}_other=""))) OR (pMode~=1 & ((${questionCode}_other~="" & ${questionCode}=${otherCode}) OR (${questionCode} in (${modeOptions[1]}) & ${questionCode}_other="")))) then ${questionCode}_final="${codeTemplate.true}"; \nelse if ~(${skipLogic}) & ${questionCode}="" & ${questionCode}_other="" then ${questionCode}_final="${codeTemplate.true}";\nelse ${questionCode}_final="${codeTemplate.false}";\n\n`;
+                            if(modeOptions.length===2){
+                                code=code+`if (${skipLogic}) & ((pMode=1 & ((${questionCode}_other~="" & ${questionCode}=${otherCode}) OR (${questionCode} in (${modeOptions[0]}) & ${questionCode}_other=""))) OR (pMode>1 & ((${questionCode}_other~="" & ${questionCode}=${otherCode}) OR (${questionCode} in (${modeOptions[1]}) & ${questionCode}_other="")))) then ${questionCode}_final="${codeTemplate.true}"; \nelse if ~(${skipLogic}) & ${questionCode}="" & ${questionCode}_other="" then ${questionCode}_final="${codeTemplate.true}";\nelse ${questionCode}_final="${codeTemplate.false}";\n\n`;
+                            }else{
+                                code=code+`if (${skipLogic}) & ((pMode=1 & ((${questionCode}_other~="" & ${questionCode}=${otherCode}) OR (${questionCode} in (${modeOptions[0]}) & ${questionCode}_other=""))) OR (pMode=2 & ((${questionCode}_other~="" & ${questionCode}=${otherCode}) OR (${questionCode} in (${modeOptions[1]}) & ${questionCode}_other=""))) OR (pMode=3 & ((${questionCode}_other~="" & ${questionCode}=${otherCode}) OR (${questionCode} in (${modeOptions[2]}) & ${questionCode}_other="")))) then ${questionCode}_final="${codeTemplate.true}"; \nelse if ~(${skipLogic}) & ${questionCode}="" & ${questionCode}_other="" then ${questionCode}_final="${codeTemplate.true}";\nelse ${questionCode}_final="${codeTemplate.false}";\n\n`; 
+                            }     
                         }else{
                             code=code+`if (${skipLogic}) & ((${questionCode}_other~="" & ${questionCode}=${otherCode}) OR (${questionCode} in (${answerOptions}) & ${questionCode}_other="")) then ${questionCode}_final="${codeTemplate.true}"; \nelse if ~(${skipLogic}) & ${questionCode}="" & ${questionCode}_other="" then ${questionCode}_final="${codeTemplate.true}";\nelse ${questionCode}_final="${codeTemplate.false}";\n\n`;
                         }
-                        codeTemplate.midProcs2+=`${questionCode}_final,`;
+                        codeTemplate.midProcs2+=`, ${questionCode}_final`;
                     }else{
                         if(modeSwitch){
-                            code=code+`if (${skipLogic}) & ((pMode=1 & ${questionCode} in (${modeOptions[0]})) OR (pMode~=1 & ${questionCode} in (${modeOptions[1]}))) then ${questionCode}_final="${codeTemplate.true}"; \nelse if ~(${skipLogic}) & ${questionCode}="" then ${questionCode}_final="${codeTemplate.true}";\nelse ${questionCode}_final="${codeTemplate.false}";\n\n`;
+                            if(modeOptions.length===2){
+                                code=code+`if (${skipLogic}) & ((pMode=1 & ${questionCode} in (${modeOptions[0]})) OR (pMode>1 & ${questionCode} in (${modeOptions[1]}))) then ${questionCode}_final="${codeTemplate.true}"; \nelse if ~(${skipLogic}) & ${questionCode}="" then ${questionCode}_final="${codeTemplate.true}";\nelse ${questionCode}_final="${codeTemplate.false}";\n\n`;
+                            }else{
+                                code=code+`if (${skipLogic}) & ((pMode=1 & ${questionCode} in (${modeOptions[0]})) OR (pMode=2 & ${questionCode} in (${modeOptions[1]})) OR (pMode=3 & ${questionCode} in (${modeOptions[2]}))) then ${questionCode}_final="${codeTemplate.true}"; \nelse if ~(${skipLogic}) & ${questionCode}="" then ${questionCode}_final="${codeTemplate.true}";\nelse ${questionCode}_final="${codeTemplate.false}";\n\n`;
+                            }
                         }else{
                             code=code+`if (${skipLogic}) & ${questionCode} in (${answerOptions}) then ${questionCode}_final="${codeTemplate.true}"; \nelse if ~(${skipLogic}) & ${questionCode}="" then ${questionCode}_final="${codeTemplate.true}";\nelse ${questionCode}_final="${codeTemplate.false}";\n\n`;
                         }
@@ -82,6 +105,14 @@ const Output = (props) => {
             break;
             case('mcq'):
                 let subqstr=subQuestions;
+                let min='';
+                let max='';
+                if(minMaxarr.length>1){
+                    min=minMaxarr[0].trim() ? minMaxarr[0] : '1';
+                    max=minMaxarr[1].trim();
+                }else{
+                    min=minMaxarr[0].trim() ? minMaxarr[0] : '1';
+                }
                 let parsedsubQ=subqstr.split(',');
                 let subqarr=[];
                 for(let i=0; i<parsedsubQ.length; i++){
@@ -96,12 +127,10 @@ const Output = (props) => {
                         !(subqarr.includes(Number(parsedsubQ[i].trim()))) && subqarr.push(Number(parsedsubQ[i].trim()));
                     }
                 }
-
                 if(otherCode){
                     !(subqarr.includes(otherCode)) && subqarr.push(otherCode);
                     code=code+`if ${questionCode}_other~="" then ${questionCode}_${otherCode}=1; \nif ${questionCode}_other="" then ${questionCode}_${otherCode}="";\n\n`
                 }
-
                 let excArr = exclusiveOption.split(',');
                 if(exclusiveOption){
                     for(let i=0; i<excArr.length; i++){
@@ -134,12 +163,12 @@ const Output = (props) => {
                                 expression+=`${questionCode}_${excArr[i]}~=1 & `
                             }else{
                                 firstexpression+=`(${questionCode}_${excArr[i]}=1 & sum${questionCode}=1) OR `;
-                                expression+=`${questionCode}_${excArr[i]}~=1 & sum${questionCode}>=1)`;
+                                expression+=`${questionCode}_${excArr[i]}~=1 & ${max ? max+'>=' : ''}sum${questionCode}>=${min})`;
                             }
                         }
                         expression=firstexpression+expression;
                     }else{
-                        expression=`sum${questionCode}>=1`;
+                        expression=`${max ? max+'>=' : ''}sum${questionCode}>=${min}`;
                     }
                     codeTemplate.midProcs2+=`, ${questionCode}_final`;
                     code=code+`if (${skipLogic}) & (${expression}) then ${questionCode}_final="${codeTemplate.true}";\nelse if ~(${skipLogic}) & sum${questionCode}="" then ${questionCode}_final="${codeTemplate.true}";\nelse ${questionCode}_final="${codeTemplate.false}";\n\n`
@@ -154,12 +183,12 @@ const Output = (props) => {
                                 expression+=`${questionCode}_${excArr[i]}~=1 & `
                             }else{
                                 firstexpression+=`(${questionCode}_${excArr[i]}=1 & sum${questionCode}=1) OR `;
-                                expression+=`${questionCode}_${excArr[i]}~=1 & sum${questionCode}>=1)`;
+                                expression+=`${questionCode}_${excArr[i]}~=1 & ${max ? max+'>=' : ''}sum${questionCode}>=${min})`;
                             }
                         }
                         expression=firstexpression+expression;
                     }else{
-                        expression=`sum${questionCode}>=1`;
+                        expression=`${max ? max+'>=' : ''}sum${questionCode}>=${min}`;
                     }
                     codeTemplate.midProcs2+=`, ${questionCode}_final`;
                     code=code+`if (${expression}) then ${questionCode}_final="${codeTemplate.true}";\nelse ${questionCode}_final="${codeTemplate.false}";\n\n`
@@ -167,7 +196,7 @@ const Output = (props) => {
             break;
             case('array'):
                 let subqstrArr=subQuestions;
-                let parsedsubQArr=subqstrArr.split(',');
+                let parsedsubQArr=subqstrArr.split(/,\s*(?![^()]*\))/);
                 let subqarrArr=[];
                 for(let i=0; i<parsedsubQArr.length; i++){
                     if(parsedsubQArr[i].includes(':')){
@@ -198,14 +227,22 @@ const Output = (props) => {
                             let qcode = parsedQcode[0].trim();
                             let skLogic = parsedQcode[1].split(']')[0].trim();
                             if(modeSwitch){
-                                code=code+`if (${skipLogic} & ${skLogic}) & ((pMode=1 & ${questionCode+qcode} in (${modeOptions[0]})) OR (pMode~=1 & ${questionCode+qcode} in (${modeOptions[1]}))) then ${questionCode+qcode}_final="${codeTemplate.true}"; \nelse if ~(${skipLogic} & ${skLogic}) & ${questionCode+qcode}="" then ${questionCode+qcode}_final="${codeTemplate.true}";\nelse ${questionCode+qcode}_final="${codeTemplate.false}";\n\n`;
+                                if(modeOptions.length===2){
+                                    code=code+`if (${skipLogic} & ${skLogic}) & ((pMode=1 & ${questionCode+qcode} in (${modeOptions[0]})) OR (pMode>1 & ${questionCode+qcode} in (${modeOptions[1]}))) then ${questionCode+qcode}_final="${codeTemplate.true}"; \nelse if ~(${skipLogic} & ${skLogic}) & ${questionCode+qcode}="" then ${questionCode+qcode}_final="${codeTemplate.true}";\nelse ${questionCode+qcode}_final="${codeTemplate.false}";\n\n`;
+                                }else{
+                                    code=code+`if (${skipLogic} & ${skLogic}) & ((pMode=1 & ${questionCode+qcode} in (${modeOptions[0]})) OR (pMode=2 & ${questionCode+qcode} in (${modeOptions[1]})) OR (pMode=3 & ${questionCode+qcode} in (${modeOptions[2]}))) then ${questionCode+qcode}_final="${codeTemplate.true}"; \nelse if ~(${skipLogic} & ${skLogic}) & ${questionCode+qcode}="" then ${questionCode+qcode}_final="${codeTemplate.true}";\nelse ${questionCode+qcode}_final="${codeTemplate.false}";\n\n`;
+                                }
                             }else{
                                 code=code+`if (${skipLogic} & ${skLogic}) & ${questionCode+qcode} in (${answerOptions}) then ${questionCode+qcode}_final="${codeTemplate.true}"; \nelse if ~(${skipLogic} & ${skLogic}) & ${questionCode+qcode}="" then ${questionCode+qcode}_final="${codeTemplate.true}";\nelse ${questionCode+qcode}_final="${codeTemplate.false}";\n\n`;
                             }
-                            codeTemplate.midProcs2+=`, ${questionCode}_final`;
+                            codeTemplate.midProcs2+=`, ${questionCode+qcode}_final`;
                         }else{
                             if(modeSwitch){
-                                code=code+`if (${skipLogic}) & ((pMode=1 & ${questionCode+subqarrArr[i]} in (${modeOptions[0]})) OR (pMode~=1 & ${questionCode+subqarrArr[i]} in (${modeOptions[1]}))) then ${questionCode+subqarrArr[i]}_final="${codeTemplate.true}"; \nelse if ~(${skipLogic}) & ${questionCode+subqarrArr[i]}="" then ${questionCode+subqarrArr[i]}_final="${codeTemplate.true}";\nelse ${questionCode+subqarrArr[i]}_final="${codeTemplate.false}";\n\n`;
+                                if(modeOptions.length===2){
+                                    code=code+`if (${skipLogic}) & ((pMode=1 & ${questionCode+subqarrArr[i]} in (${modeOptions[0]})) OR (pMode>1 & ${questionCode+subqarrArr[i]} in (${modeOptions[1]}))) then ${questionCode+subqarrArr[i]}_final="${codeTemplate.true}"; \nelse if ~(${skipLogic}) & ${questionCode+subqarrArr[i]}="" then ${questionCode+subqarrArr[i]}_final="${codeTemplate.true}";\nelse ${questionCode+subqarrArr[i]}_final="${codeTemplate.false}";\n\n`;
+                                }else{
+                                    code=code+`if (${skipLogic}) & ((pMode=1 & ${questionCode+subqarrArr[i]} in (${modeOptions[0]})) OR (pMode=2 & ${questionCode+subqarrArr[i]} in (${modeOptions[1]})) OR (pMode=3 & ${questionCode+subqarrArr[i]} in (${modeOptions[2]}))) then ${questionCode+subqarrArr[i]}_final="${codeTemplate.true}"; \nelse if ~(${skipLogic}) & ${questionCode+subqarrArr[i]}="" then ${questionCode+subqarrArr[i]}_final="${codeTemplate.true}";\nelse ${questionCode+subqarrArr[i]}_final="${codeTemplate.false}";\n\n`;
+                                }
                             }else{
                                 code=code+`if (${skipLogic}) & ${questionCode+subqarrArr[i]} in (${answerOptions}) then ${questionCode+subqarrArr[i]}_final="${codeTemplate.true}"; \nelse if ~(${skipLogic}) & ${questionCode+subqarrArr[i]}="" then ${questionCode+subqarrArr[i]}_final="${codeTemplate.true}";\nelse ${questionCode+subqarrArr[i]}_final="${codeTemplate.false}";\n\n`;
                             }
@@ -219,14 +256,22 @@ const Output = (props) => {
                             let qcode = parsedQcode[0].trim();
                             let skLogic = parsedQcode[1].split(']')[0].trim();
                             if(modeSwitch){
-                                code=code+`if (${skLogic}) & ((pMode=1 & ${questionCode+qcode} in (${modeOptions[0]})) OR (pMode~=1 & ${questionCode+qcode} in (${modeOptions[1]}))) then ${questionCode+qcode}_final="${codeTemplate.true}"; \nelse if ~(${skLogic}) & ${questionCode+qcode}="" then ${questionCode+qcode}_final="${codeTemplate.true}";\nelse ${questionCode+qcode}_final="${codeTemplate.false}";\n\n`;
+                                if(modeOptions.length===2){
+                                    code=code+`if (${skLogic}) & ((pMode=1 & ${questionCode+qcode} in (${modeOptions[0]})) OR (pMode>1 & ${questionCode+qcode} in (${modeOptions[1]}))) then ${questionCode+qcode}_final="${codeTemplate.true}"; \nelse if ~(${skLogic}) & ${questionCode+qcode}="" then ${questionCode+qcode}_final="${codeTemplate.true}";\nelse ${questionCode+qcode}_final="${codeTemplate.false}";\n\n`;
+                                }else{
+                                    code=code+`if (${skLogic}) & ((pMode=1 & ${questionCode+qcode} in (${modeOptions[0]})) OR (pMode=2 & ${questionCode+qcode} in (${modeOptions[1]})) OR (pMode=3 & ${questionCode+qcode} in (${modeOptions[2]}))) then ${questionCode+qcode}_final="${codeTemplate.true}"; \nelse if ~(${skLogic}) & ${questionCode+qcode}="" then ${questionCode+qcode}_final="${codeTemplate.true}";\nelse ${questionCode+qcode}_final="${codeTemplate.false}";\n\n`;
+                                }
                             }else{
                                 code=code+`if (${skLogic}) & ${questionCode+qcode} in (${answerOptions}) then ${questionCode+qcode}_final="${codeTemplate.true}"; \nelse if ~(${skLogic}) & ${questionCode+qcode}="" then ${questionCode+qcode}_final="${codeTemplate.true}";\nelse ${questionCode+qcode}_final="${codeTemplate.false}";\n\n`;
                             }
-                            codeTemplate.midProcs2+=`, ${questionCode}_final`;
+                            codeTemplate.midProcs2+=`, ${questionCode+qcode}_final`;
                         }else{
                             if(modeSwitch){
-                                code=code+`if ((pMode=1 & ${questionCode+subqarrArr[i]} in (${modeOptions[0]})) OR (pMode~=1 & ${questionCode+subqarrArr[i]} in (${modeOptions[1]}))) then ${questionCode+subqarrArr[i]}_final="${codeTemplate.true}";\nelse ${questionCode+subqarrArr[i]}_final="${codeTemplate.false}";\n\n`;
+                                if(modeOptions.length===2){
+                                    code=code+`if ((pMode=1 & ${questionCode+subqarrArr[i]} in (${modeOptions[0]})) OR (pMode>1 & ${questionCode+subqarrArr[i]} in (${modeOptions[1]}))) then ${questionCode+subqarrArr[i]}_final="${codeTemplate.true}";\nelse ${questionCode+subqarrArr[i]}_final="${codeTemplate.false}";\n\n`;
+                                }else{
+                                    code=code+`if ((pMode=1 & ${questionCode+subqarrArr[i]} in (${modeOptions[0]})) OR (pMode=2 & ${questionCode+subqarrArr[i]} in (${modeOptions[1]})) OR (pMode=3 & ${questionCode+subqarrArr[i]} in (${modeOptions[2]}))) then ${questionCode+subqarrArr[i]}_final="${codeTemplate.true}";\nelse ${questionCode+subqarrArr[i]}_final="${codeTemplate.false}";\n\n`;
+                                }
                             }else{
                                 code=code+`if ${questionCode+subqarrArr[i]} in (${answerOptions}) then ${questionCode+subqarrArr[i]}_final="${codeTemplate.true}";\nelse ${questionCode+subqarrArr[i]}_final="${codeTemplate.false}";\n\n`;
                             }
@@ -245,6 +290,9 @@ const Output = (props) => {
                         }
                     }
                 }
+            break;
+            case('midfieldchange'):
+                code+=`submitDatetonum=input(put(submitdate,yymmddn8.),8.);\n\nif (submitDatetonum < ${changeDate} ) & (${oldLogic}) then ${questionCode}_final="${codeTemplate.true}";\nelse if ~(submitDatetonum < ${changeDate}) & (${newLogic}) then ${questionCode}_final="${codeTemplate.true}";\nelse ${questionCode}_final="${codeTemplate.false}";\n\n`
             break;
             default:
             break;

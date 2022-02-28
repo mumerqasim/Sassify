@@ -56,6 +56,16 @@
     border: 1px solid rgb(92, 92, 92);
 }
 
+.TextInputGroup > input[name="minMax"] {
+   max-width: 10rem;
+}
+
+.TextInputGroup > input[name="newLogic"] {
+    position: absolute;
+    left: 7.5rem;
+    width: 48%;
+ }
+
 .TextInput:focus{
     box-shadow: 1px 1rem 3rem rgba(128, 128, 128, 0.103);
 } 

@@ -30,7 +30,11 @@ const questionCategories = [
         category:'customcode',
         label: 'Custom Code'
     },
-
+    {
+        id: new Date().toISOString() + Math.random(),
+        category:'midfieldchange',
+        label: 'Midfield Change'
+    }
 ];
 
 const textInputs = [
@@ -74,6 +78,10 @@ const Question = (props) => {
     const [otherCode, updateOtherCode] = useState('');
     const [customCode, updateCustomCode] = useState('');
     const [exclusiveOption, updateExclusiveOption] = useState('');
+    const [minMax, updateminMax] = useState('');
+    const [oldLogic, updateoldLogic] = useState('');
+    const [newLogic, updatenewLogic] = useState('');
+    const [changeDate, updatechangeDate] = useState('');
 
     let qcIndex = textInputs.findIndex(obj => obj.category==='qcode');
     if(qcIndex!=-1){
@@ -110,12 +118,48 @@ const Question = (props) => {
         textInputs[cusIndex].value=customCode;
     }
 
+    let minMaxIndex = textInputs.findIndex(obj => obj.category==='minMax');
+    if(minMaxIndex!=-1){
+        textInputs[minMaxIndex].value=minMax;
+    }
+
+    let oLIndex = textInputs.findIndex(obj => obj.category==='oldLogic');
+    if(oLIndex!=-1){
+        textInputs[oLIndex].value=oldLogic;
+    }
+
+    let nLIndex = textInputs.findIndex(obj => obj.category==='newLogic');
+    if(nLIndex!=-1){
+        textInputs[nLIndex].value=newLogic;
+    }
+
+    let cngIndex = textInputs.findIndex(obj => obj.category==='changeDate');
+    if(cngIndex!=-1){
+        textInputs[cngIndex].value=changeDate;
+    }
+
     const radioChangeHandler = (e) => {
         if (e.target.value==="radio/equation"){
             exIndex===-1 ? textInputs.splice(0,0) : textInputs.splice(textInputs.findIndex(obj => obj.category==='exclusive'),1);
             sqIndex===-1 ? textInputs.splice(0,0) : textInputs.splice(textInputs.findIndex(obj => obj.category==='subquestions'),1);
             cusIndex===-1 ? textInputs.splice(0,0) : textInputs.splice(textInputs.findIndex(obj => obj.category==='custom'),1);
-            textInputs.find(obj => obj.category==='qcode').asterick=true;
+            minMaxIndex===-1 ? textInputs.splice(0,0) : textInputs.splice(textInputs.findIndex(obj => obj.category==='minMax'),1);
+            oLIndex===-1 ? textInputs.splice(0,0) : textInputs.splice(textInputs.findIndex(obj => obj.category==='oldLogic'),1);
+            nLIndex===-1 ? textInputs.splice(0,0) : textInputs.splice(textInputs.findIndex(obj => obj.category==='newLogic'),1);
+            cngIndex===-1 ? textInputs.splice(0,0) : textInputs.splice(textInputs.findIndex(obj => obj.category==='changeDate'),1);
+
+            if(qcIndex==-1){
+                textInputs.push({
+                    id: new Date().toISOString() + Math.random(),
+                    category:'qcode',
+                    label:'Question Code:',
+                    placeholder: 'Enter the q-code',
+                    asterick:true,
+                    value:questionCode
+                });
+            }else{
+                textInputs[qcIndex].asterick=true;
+            }
             if(aoIndex==-1){
                 textInputs.splice(1,0 ,{
                     id: new Date().toISOString() + Math.random(),
@@ -155,7 +199,21 @@ const Question = (props) => {
         if (e.target.value==="mcq"){
             aoIndex===-1 ? textInputs.splice(0,0) : textInputs.splice(aoIndex,1);
             cusIndex===-1 ? textInputs.splice(0,0) : textInputs.splice(textInputs.findIndex(obj => obj.category==='custom'),1);
-            textInputs.find(obj => obj.category==='qcode').asterick=true;
+            oLIndex===-1 ? textInputs.splice(0,0) : textInputs.splice(textInputs.findIndex(obj => obj.category==='oldLogic'),1);
+            nLIndex===-1 ? textInputs.splice(0,0) : textInputs.splice(textInputs.findIndex(obj => obj.category==='newLogic'),1);
+            cngIndex===-1 ? textInputs.splice(0,0) : textInputs.splice(textInputs.findIndex(obj => obj.category==='changeDate'),1);
+            if(qcIndex==-1){
+                textInputs.push({
+                    id: new Date().toISOString() + Math.random(),
+                    category:'qcode',
+                    label:'Question Code:',
+                    placeholder: 'Enter the q-code',
+                    asterick:true,
+                    value:questionCode
+                });
+            }else{
+                textInputs[qcIndex].asterick=true;
+            }
             if(slIndex==-1){
                 textInputs.push(
                     {
@@ -202,6 +260,18 @@ const Question = (props) => {
                     asterick:false
                 });
             }
+            if(minMaxIndex==-1){
+                textInputs.push(
+                    {
+                        id: new Date().toISOString() + Math.random(),
+                        category:'minMax',
+                        label:'Min,Max:',
+                        placeholder: 'Enter the Min,Max choices',
+                        asterick:false,
+                        value:minMax
+                    }
+                );
+            }
             let thesqIndex = textInputs.findIndex(obj => obj.category==='subquestions');
             if (thesqIndex!=2){
                 let b = textInputs[thesqIndex];
@@ -215,7 +285,22 @@ const Question = (props) => {
             sqIndex===-1 ? textInputs.splice(0,0) : textInputs.splice(textInputs.findIndex(obj => obj.category==='subquestions'),1);
             aoIndex===-1 ? textInputs.splice(0,0) : textInputs.splice(textInputs.findIndex(obj => obj.category==='aoptions'),1);
             otIndex===-1 ? textInputs.splice(0,0) : textInputs.splice(textInputs.findIndex(obj => obj.category==='other'),1);
-            textInputs.find(obj => obj.category==='qcode').asterick=true;
+            minMaxIndex===-1 ? textInputs.splice(0,0) : textInputs.splice(textInputs.findIndex(obj => obj.category==='minMax'),1);
+            oLIndex===-1 ? textInputs.splice(0,0) : textInputs.splice(textInputs.findIndex(obj => obj.category==='oldLogic'),1);
+            nLIndex===-1 ? textInputs.splice(0,0) : textInputs.splice(textInputs.findIndex(obj => obj.category==='newLogic'),1);
+            cngIndex===-1 ? textInputs.splice(0,0) : textInputs.splice(textInputs.findIndex(obj => obj.category==='changeDate'),1);
+            if(qcIndex==-1){
+                textInputs.push({
+                    id: new Date().toISOString() + Math.random(),
+                    category:'qcode',
+                    label:'Question Code:',
+                    placeholder: 'Enter the q-code',
+                    asterick:true,
+                    value:questionCode
+                });
+            }else{
+                textInputs[qcIndex].asterick=true;
+            }
             if(slIndex==-1){
                 textInputs.push(
                     {
@@ -235,21 +320,54 @@ const Question = (props) => {
             aoIndex===-1 ? textInputs.splice(0,0) : textInputs.splice(textInputs.findIndex(obj => obj.category==='aoptions'),1);
             otIndex===-1 ? textInputs.splice(0,0) : textInputs.splice(textInputs.findIndex(obj => obj.category==='other'),1);
             slIndex===-1 ? textInputs.splice(0,0) : textInputs.splice(textInputs.findIndex(obj => obj.category==='slogic'),1);
-            textInputs.find(obj => obj.category==='qcode').asterick=false;
-            textInputs.push({
-                id: new Date().toISOString() + Math.random(),
-                category:'custom',
-                label:'Custom SAS Code:',
-                placeholder: 'Enter the code you want to include',
-                value:exclusiveOption,
-                asterick:true
-            });
+            minMaxIndex===-1 ? textInputs.splice(0,0) : textInputs.splice(textInputs.findIndex(obj => obj.category==='minMax'),1);
+            oLIndex===-1 ? textInputs.splice(0,0) : textInputs.splice(textInputs.findIndex(obj => obj.category==='oldLogic'),1);
+            nLIndex===-1 ? textInputs.splice(0,0) : textInputs.splice(textInputs.findIndex(obj => obj.category==='newLogic'),1);
+            cngIndex===-1 ? textInputs.splice(0,0) : textInputs.splice(textInputs.findIndex(obj => obj.category==='changeDate'),1);
+            if(qcIndex==-1){
+                textInputs.push({
+                    id: new Date().toISOString() + Math.random(),
+                    category:'qcode',
+                    label:'Question Code:',
+                    placeholder: 'Enter the q-code',
+                    asterick:false,
+                    value:questionCode
+                });
+            }else{
+                textInputs[qcIndex].asterick=false;
+            }
+
+            if(cusIndex==-1){
+                textInputs.push({
+                    id: new Date().toISOString() + Math.random(),
+                    category:'custom',
+                    label:'Custom SAS Code:',
+                    placeholder: 'Enter the code you want to include',
+                    value:exclusiveOption,
+                    asterick:true
+                });
+            }
         } 
         if(e.target.value==="array"){
             exIndex===-1 ? textInputs.splice(0,0) : textInputs.splice(textInputs.findIndex(obj => obj.category==='exclusive'),1);
             otIndex===-1 ? textInputs.splice(0,0) : textInputs.splice(textInputs.findIndex(obj => obj.category==='other'),1);
             cusIndex===-1 ? textInputs.splice(0,0) : textInputs.splice(textInputs.findIndex(obj => obj.category==='custom'),1);
-            textInputs.find(obj => obj.category==='qcode').asterick=true;
+            minMaxIndex===-1 ? textInputs.splice(0,0) : textInputs.splice(textInputs.findIndex(obj => obj.category==='minMax'),1);
+            oLIndex===-1 ? textInputs.splice(0,0) : textInputs.splice(textInputs.findIndex(obj => obj.category==='oldLogic'),1);
+            nLIndex===-1 ? textInputs.splice(0,0) : textInputs.splice(textInputs.findIndex(obj => obj.category==='newLogic'),1);
+            cngIndex===-1 ? textInputs.splice(0,0) : textInputs.splice(textInputs.findIndex(obj => obj.category==='changeDate'),1);
+            if(qcIndex==-1){
+                textInputs.push({
+                    id: new Date().toISOString() + Math.random(),
+                    category:'qcode',
+                    label:'Question Code:',
+                    placeholder: 'Enter the q-code',
+                    asterick:true,
+                    value:questionCode
+                });
+            }else{
+                textInputs[qcIndex].asterick=true;
+            }
             if(aoIndex==-1){
                 textInputs.splice(1,0 ,{
                     id: new Date().toISOString() + Math.random(),
@@ -291,6 +409,54 @@ const Question = (props) => {
                 );
             }
         }
+        if(e.target.value==="midfieldchange"){
+            exIndex===-1 ? textInputs.splice(0,0) : textInputs.splice(textInputs.findIndex(obj => obj.category==='exclusive'),1);
+            sqIndex===-1 ? textInputs.splice(0,0) : textInputs.splice(textInputs.findIndex(obj => obj.category==='subquestions'),1);
+            aoIndex===-1 ? textInputs.splice(0,0) : textInputs.splice(textInputs.findIndex(obj => obj.category==='aoptions'),1);
+            otIndex===-1 ? textInputs.splice(0,0) : textInputs.splice(textInputs.findIndex(obj => obj.category==='other'),1);
+            slIndex===-1 ? textInputs.splice(0,0) : textInputs.splice(textInputs.findIndex(obj => obj.category==='slogic'),1);
+            minMaxIndex===-1 ? textInputs.splice(0,0) : textInputs.splice(textInputs.findIndex(obj => obj.category==='minMax'),1);
+            cusIndex===-1 ? textInputs.splice(0,0) : textInputs.splice(textInputs.findIndex(obj => obj.category==='custom'),1);
+            if(qcIndex!=-1){
+                textInputs[qcIndex].asterick=true;
+            }
+            if(cngIndex==-1){
+                textInputs.push(
+                    {
+                        id: new Date().toISOString() + Math.random(),
+                        category:'changeDate',
+                        label:'Change Date:',
+                        placeholder: 'Enter the Change Date',
+                        asterick:true,
+                        value:changeDate
+                    }
+                );
+            }
+            if(oLIndex==-1){
+                textInputs.push(
+                    {
+                        id: new Date().toISOString() + Math.random(),
+                        category:'oldLogic',
+                        label:'Old Logic:',
+                        placeholder: 'Enter the Old Logic',
+                        asterick:true,
+                        value:oldLogic
+                    }
+                );
+            }
+            if(nLIndex==-1){
+                textInputs.push(
+                    {
+                        id: new Date().toISOString() + Math.random(),
+                        category:'newLogic',
+                        label:'New Logic:',
+                        placeholder: 'Enter the New Logic',
+                        asterick:true,
+                        value:newLogic
+                    }
+                );
+            }
+        }
         updateQuestionType((state) => {
             return e.target.value;
         });
@@ -318,10 +484,22 @@ const Question = (props) => {
         if(e.target.id === 'custom'){
             updateCustomCode(e.target.value);
         }
+        if(e.target.id === 'minMax'){
+            updateminMax(e.target.value);
+        }
+        if(e.target.id === 'oldLogic'){
+            updateoldLogic(e.target.value);
+        }
+        if(e.target.id === 'newLogic'){
+            updatenewLogic(e.target.value);
+        }
+        if(e.target.id === 'changeDate'){
+            updatechangeDate(e.target.value);
+        }
     }
 
     const onAddQuestionHandler = (e) => {
-        if((questionType=='customcode' && customCode) || (questionType=='mcq' && questionCode && subQuestions) || (questionType==='sft' && questionCode) || (questionType=='array' && questionCode && subQuestions && answerOptions) || (questionType=='radio/equation' && questionCode && answerOptions)){
+        if((questionType=='customcode' && customCode) || (questionType=='midfieldchange' && changeDate && oldLogic && newLogic && questionCode) ||(questionType=='mcq' && questionCode && subQuestions) || (questionType==='sft' && questionCode) || (questionType=='array' && questionCode && subQuestions && answerOptions) || (questionType=='radio/equation' && questionCode && answerOptions)){
             const newQuestion = {
                 id: new Date().toISOString() + Math.random(),
                 questionType,
@@ -331,7 +509,11 @@ const Question = (props) => {
                 otherCode,
                 exclusiveOption,
                 subQuestions,
-                customCode
+                customCode,
+                minMax,
+                oldLogic,
+                newLogic,
+                changeDate
             }
             props.addQuestion(newQuestion);
             updateQuestionCode('');
@@ -341,12 +523,12 @@ const Question = (props) => {
             updateExclusiveOption('');
             updatesubQuestions('');
             updateCustomCode('');
+            updateminMax('');
+            updatenewLogic('');
+            updateoldLogic('');
+            updatechangeDate('');
         }
-
     }
-
-
-
     return(
         <section className={Styles.NewQuestionSection} >
             <h4 className={Styles.RadioSpan}>Question Type:<span className='required'>*</span></h4>

@@ -1,8 +1,8 @@
 import React from 'react';
 import { useState } from 'react';
-import Styles from './NewQuestion.module.css';
-import Radio from './Radio';
-import TextInput from './TextInput';
+import Styles from './EditQuestion.module.css';
+import Radio from '../New Question/Radio';
+import TextInput from '../New Question/TextInput';
 
 const questionCategories = [
     {
@@ -68,20 +68,22 @@ const textInputs = [
     }
 ]
 
-const Question = React.memo((props) => {
-    const [defaultQ, updateDefaultQ] = useState('radio/equation');
-    const [questionType,updateQuestionType] = useState('radio/equation');
-    const [questionCode, updateQuestionCode] = useState('');
-    const [answerOptions, updateAnswerOptions] = useState('');
-    const [subQuestions, updatesubQuestions] = useState('');
-    const [skipLogic, updateSkipLogic] = useState('');
-    const [otherCode, updateOtherCode] = useState('');
-    const [customCode, updateCustomCode] = useState('');
-    const [exclusiveOption, updateExclusiveOption] = useState('');
-    const [minMax, updateminMax] = useState('');
-    const [oldLogic, updateoldLogic] = useState('');
-    const [newLogic, updatenewLogic] = useState('');
-    const [changeDate, updatechangeDate] = useState('');
+
+const EditQuestion = React.memo((props) => {
+    const [defaultQ, updateDefaultQ] = useState(props.editModeQ.questionType);
+    const [questionType,updateQuestionType] = useState(props.editModeQ.questionType);
+    const [questionCode, updateQuestionCode] = useState(props.editModeQ.questionCode);
+    const [answerOptions, updateAnswerOptions] = useState(props.editModeQ.answerOptions);
+    const [subQuestions, updatesubQuestions] = useState(props.editModeQ.subQuestions);
+    const [skipLogic, updateSkipLogic] = useState(props.editModeQ.skipLogic);
+    const [otherCode, updateOtherCode] = useState(props.editModeQ.otherCode);
+    const [customCode, updateCustomCode] = useState(props.editModeQ.customCode);
+    const [exclusiveOption, updateExclusiveOption] = useState(props.editModeQ.exclusiveOption);
+    const [minMax, updateminMax] = useState(props.editModeQ.minMax);
+    const [oldLogic, updateoldLogic] = useState(props.editModeQ.oldLogic);
+    const [newLogic, updatenewLogic] = useState(props.editModeQ.newLogic);
+    const [changeDate, updatechangeDate] = useState(props.editModeQ.changeDate);
+    const [index,updateIndex] = useState(props.editModeQ.index);
 
     let qcIndex = textInputs.findIndex(obj => obj.category==='qcode');
     if(qcIndex!=-1){
@@ -138,12 +140,16 @@ const Question = React.memo((props) => {
         textInputs[cngIndex].value=changeDate;
     }
 
+    
     const radioChangeHandler = (e) => {
+        updateDefaultQ(e.target.value);
         updateQuestionType((state) => {
             return e.target.value;
         });
-        updateDefaultQ(e.target.value);
      }
+
+    
+
 
      if (defaultQ==="radio/equation"){
         exIndex===-1 ? textInputs.splice(0,0) : textInputs.splice(textInputs.findIndex(obj => obj.category==='exclusive'),1);
@@ -501,7 +507,6 @@ const Question = React.memo((props) => {
     }
 
     const onAddQuestionHandler = (e) => {
-        
         if((questionType=='customcode' && customCode) || (questionType=='midfieldchange' && changeDate && oldLogic && newLogic && questionCode) ||(questionType=='mcq' && questionCode && subQuestions) || (questionType==='sft' && questionCode) || (questionType=='array' && questionCode && subQuestions && answerOptions) || (questionType=='radio/equation' && questionCode && answerOptions)){
             const newQuestion = {
                 id: new Date().toISOString() + Math.random(),
@@ -516,7 +521,8 @@ const Question = React.memo((props) => {
                 minMax,
                 oldLogic,
                 newLogic,
-                changeDate
+                changeDate, 
+                index
             }
             if(questionType==='radio/equation'){
                 newQuestion.exclusiveOption='';
@@ -587,16 +593,16 @@ const Question = React.memo((props) => {
         <section className={Styles.NewQuestionSection} >
             <h4 className={Styles.RadioSpan}>Question Type:<span className='required'>*</span></h4>
             <div className={Styles.RadioContainer}>
-                {questionCategories.map(category => <Radio key={category.id} defaultQ={defaultQ} category={category.category} clicked={radioChangeHandler} label={category.label}/>)}
+                {questionCategories.map(category => <Radio key={category.id} defaultQ={defaultQ} fromEdit={true} category={category.category} clicked={radioChangeHandler} label={category.label}/>)}
             </div>
             <div className={Styles.TextInputContainer}>
                 {textInputs.map((input,index) => <TextInput key={input.id} asterick={input.asterick} value={input.value} category={input.category} changed={textChangeHandler} groupClass={'Group-'+ (index+1)} label={input.label} placeholder={input.placeholder}/>)}
             </div>
             <div className={Styles.ButtonContainer}>
-                <button onClick={onAddQuestionHandler} className={Styles.AddButton}>Add Question</button>
+                <button onClick={onAddQuestionHandler} className={Styles.AddButton}>Save Question</button>
             </div>
         </section >
     );
 });
 
-export default Question;
+export default EditQuestion;

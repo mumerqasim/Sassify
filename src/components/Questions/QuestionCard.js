@@ -1,9 +1,11 @@
 import Styles from './QuestionCard.module.css';
 
+
 const QuestionCard = (props) => {
     return(
         <div className={Styles.QCardContainer}>
-            <div className={Styles.Cross} onClick={(e)=>props.crossClicked(e,props.qObject.id)}><span>x</span></div>
+            {props.editMode ? null : <div className={Styles.Cross} title="Delete" onClick={(e)=>props.crossClicked(e,props.qObject.id)}><span>x</span></div>}
+            {props.editMode ? null : <div className={Styles.Edit} title="Edit" onClick={(e)=>props.editClicked(e,props.qObject.id)}><img src="https://img.icons8.com/external-anggara-glyph-anggara-putra/64/000000/external-edit-basic-ui-anggara-glyph-anggara-putra.png"/></div>}
             {props.qObject.questionCode ? <div className={Styles.CardGroup}>
                 <label htmlFor='qcode'>Question Code:</label>
                 <input type="text" id='qcode' defaultValue={props.qObject.questionCode} readOnly/>

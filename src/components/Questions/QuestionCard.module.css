@@ -10,7 +10,7 @@
     position: relative;
 }
 
-.QCardContainer:hover>.Cross{
+.QCardContainer:hover>.Cross, .QCardContainer:hover>.Edit{
     opacity: 100%;
 }
 
@@ -20,14 +20,43 @@
     margin-top: 2px;
 }
 
+.Edit:hover>img{
+    transform: rotate(15deg);
+}
+
+.Edit{
+    position: absolute;
+    left: 96%;
+    bottom: 100%;
+    border: 1px solid grey;
+    background-color: white;
+    color: black;
+    width:1.5rem;
+    height:1.5rem;
+    padding: 0.6rem 0.6rem 0.6rem 0.6rem;
+    border-radius: 50%;
+    color: white;
+    display: flex;
+    opacity: 0;
+    align-items: center;
+    justify-content: center;
+    transform: translate(-50%, 50%);
+    cursor: pointer;
+    transition: all linear 0.3s;
+}
+
+.Edit > img{
+    width: 1rem;
+}
 
 .Cross {
     position: absolute;
     left: 100%;
     bottom: 100%;
-    background-color: rgb(32, 32, 32);
-    width:1rem;
-    height:1rem;
+    background-color: white;
+    border: 1px solid grey;
+    width:1.5rem;
+    height:1.5rem;
     padding: 0.6rem 0.6rem 0.6rem 0.6rem;
     border-radius: 50%;
     color: white;
@@ -44,6 +73,8 @@
     display: block;
     margin-top: -2px;
     transition: all linear 0.3s;
+    color: black;
+    font-size: large;
 }
 
 

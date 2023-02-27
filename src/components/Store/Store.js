@@ -48,7 +48,7 @@
 const db = [
     {
         title:"default",
-        label:"Generic",
+        label:"Generic Codes",
         codes:[
             {
                 title:'Select Q', 
@@ -169,6 +169,36 @@ const db = [
                 question:{"id":String(Math.random()*3000),"questionType":"customcode","questionCode":"QS23B","answerOptions":"","skipLogic":"","otherCode":"","exclusiveOption":"","subQuestions":"","customCode":`if QS21_2=1 & (QS23B="" OR QS23B=1) then QS23B_final="T    ";\nelse if AS1~=1 & QS21_2~=1 & QS23B=2 then QS23B_final="T    ";\nelse if AS1=1 & QS21_2~=1 & QS23B in(2,9) then QS23B_final="T    ";\nelse QS23B_final="WRONG";`,"minMax":"","oldLogic":"","newLogic":"","changeDate":""}
              },
 
+        ]
+    },
+    {
+        title:"d1",
+        label:"D1",
+        codes:[
+            {   
+                title:'Select Q', 
+                question:{}
+            },
+        ]
+    },
+    {
+        title:"f1",
+        label:"F1",
+        codes:[
+            {   
+                title:'Select Q', 
+                question:{}
+            },
+        ]
+    },
+    {
+        title:"f2",
+        label:"F2",
+        codes:[
+            {   
+                title:'Select Q', 
+                question:{}
+            },
         ]
     },
     {
@@ -296,7 +326,27 @@ const db = [
                 question:{"id":String(Math.random()*3000),"questionType":"customcode","questionCode":"","answerOptions":"","skipLogic":"","otherCode":"","exclusiveOption":"","subQuestions":"","customCode":`QXN=VH22GE\nDrop QX;\nRename QXN=QX;`,"minMax":"","oldLogic":"","newLogic":"","changeDate":""}
              },
         ]
-    }
+    },
+    {
+        title:"p1",
+        label:"P1",
+        codes:[
+            {   
+                title:'Select Q', 
+                question:{}
+            },
+        ]
+    },
+    {
+        title:"n1",
+        label:"N1",
+        codes:[
+            {   
+                title:'Select Q', 
+                question:{}
+            },
+        ]
+    },
 ]
 
 export default db;

@@ -2,6 +2,7 @@ import './App.css';
 import NewQuestion from './components/New Question/NewQuestion';
 import EditQuestion from './components/EditQuestion/EditQuestion'
 import Output from './components/Output/Output';
+import SelectList from './components/Selection/SelectList';
 import QuestionsList from './components/Questions/QuestionsList';
 import Header from './components/UI/Header';
 import { useState } from 'react';
@@ -11,12 +12,14 @@ function App() {
   const [editModeQ, updateEditmodeQ] = useState(null);
   const [editMode, updateEditMode]=useState(false);
   const addQuestionHandler = (question) => {
+    if (question?.id){
       updateQuestionsList((state => {
         state.push(question);
         const arr = [...state];
         return arr;
       }));
-  }
+    }
+  } 
 
   const saveQuestionHandler = (question) => {
     updateQuestionsList((state => {
@@ -56,10 +59,10 @@ function App() {
   }
 
 
-  console.log('rerendered');
   return (
     <div className="App">
       <Header progressButton={questionsList.length>0} buttonClicked={buttonClickedHandler} restoreButton={!(localStorage.getItem("sascode") === null)}/>
+      <SelectList addQuestion={addQuestionHandler}/>
       {editMode ? <EditQuestion addQuestion={saveQuestionHandler} editModeQ={editModeQ}/> : <NewQuestion addQuestion={addQuestionHandler} editModeQ={editModeQ}/>}
       <QuestionsList editMode={editMode} questionsList={[...questionsList]} crossClicked={crossClickedHandler} editClicked={editClickedHandler}/>
       <Output questionsList={questionsList}/>

@@ -33,7 +33,7 @@
 
 .Header button {
     padding: 0.5rem 1rem;
-    border-radius: 15rem;
+    border-radius: 10px;
     font-weight: 700;
     min-width: 9rem;
     margin: 0.5rem;

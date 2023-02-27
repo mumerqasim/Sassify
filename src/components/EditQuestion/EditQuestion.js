@@ -355,7 +355,7 @@ const EditQuestion = React.memo((props) => {
                 category:'custom',
                 label:'Custom SAS Code:',
                 placeholder: 'Enter the code you want to include',
-                value:exclusiveOption,
+                value:customCode,
                 asterick:true
             });
         }
@@ -471,38 +471,42 @@ const EditQuestion = React.memo((props) => {
     }
 
     const textChangeHandler = (e) => {
-        if(e.target.id === 'qcode'){
+        if(typeof e !='string'){
+        if(e.target.id && e.target.id === 'qcode'){
             updateQuestionCode(e.target.value);
         }
-        if(e.target.id === 'aoptions'){
+        if(e.target.id && e.target.id === 'aoptions'){
             updateAnswerOptions(e.target.value);
         }
-        if(e.target.id === 'slogic'){
+        if(e.target.id  && e.target.id === 'slogic'){
             updateSkipLogic(e.target.value);
         }
-        if(e.target.id === 'other'){
+        if(e.target.id && e.target.id === 'other'){
             updateOtherCode(e.target.value);
         }
-        if(e.target.id === 'exclusive'){
+        if(e.target.id && e.target.id === 'exclusive'){
             updateExclusiveOption(e.target.value);
         }
-        if(e.target.id === 'subquestions'){
+        if(e.target.id && e.target.id === 'subquestions'){
             updatesubQuestions(e.target.value);
         }               
-        if(e.target.id === 'custom'){
+        if(e.target.id && e.target.id === 'custom'){
             updateCustomCode(e.target.value);
         }
-        if(e.target.id === 'minMax'){
+        if(e.target.id  && e.target.id === 'minMax') {
             updateminMax(e.target.value);
         }
-        if(e.target.id === 'oldLogic'){
+        if(e.target.id  && e.target.id === 'oldLogic'){
             updateoldLogic(e.target.value);
         }
-        if(e.target.id === 'newLogic'){
+        if(e.target.id && e.target.id === 'newLogic'){
             updatenewLogic(e.target.value);
         }
-        if(e.target.id === 'changeDate'){
+        if(e.target.id && e.target.id === 'changeDate'){
             updatechangeDate(e.target.value);
+        }
+        } else {
+            updateCustomCode(e);
         }
     }
 
